@@ -1,0 +1,39 @@
+<aura:component description="RelatedList" implements="flexipage:availableForAllPageTypes, force:hasRecordId" controller="RelatedListController">
+    <aura:attribute name="objectType" type="String"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="parentFieldName" type="String"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="tableSize" type="integer"/>
+    <aura:attribute name="data" type="sObject[]" access="global"/>
+    <aura:attribute name="page" type="integer"/>
+    <aura:attribute name="pages" type="integer"/>
+    <aura:attribute name="total" type="integer"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler event="force:showToast" action="{!c.handleApplicationEvent}"/>
+
+    <lightning:card title="Related List" iconName="standard:solution">
+        <aura:set attribute="actions">
+            <aura:if isTrue="{!not(empty(v.data))}" >
+                <lightning:button label="New" onclick="{!c.createRecord}"/>
+            </aura:if>
+        </aura:set>
+        <div class="slds-m-around_small">
+            <aura:if isTrue="{!not(empty(v.data))}" >
+                <lightning:datatable data="{! v.data }"
+                                     columns="{! v.columns }"
+                                     keyField="id"
+                                     hideCheckboxColumn="true"
+                                     onrowaction="{! c.handleRowAction }"/>
+                <div class="button-container">
+                    <lightning:button disabled="{!v.page == 1}" variant="base" label="Previous Page" onclick="{! c.navigate }" />
+                        {!v.page} / {!v.pages}
+                    <lightning:button disabled="{!v.page == v.pages}" aura:id="previousPage" variant="base" label="Next Page" onclick="{! c.navigate }" />
+                </div>
+            </aura:if>
+
+            <aura:if isTrue="{!empty(v.data)}" >
+                <p>Please fill component attributes.</p>
+            </aura:if>
+        </div>
+    </lightning:card>
+</aura:component>
