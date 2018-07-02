@@ -5,11 +5,10 @@
             { label: 'Delete', name: 'delete' }
         ];
 
-
         component.set('v.columns', [
-            {label: 'Name', fieldName: 'Name', type: 'text'},
-            {label: 'Text', fieldName: 'Description', type: 'text'},
-            {label: 'Created Date', fieldName: 'CreatedDate', type: 'date', typeAttributes: {
+            {label: 'Name', fieldName: 'Name', type: 'text', sortable: 'true'},
+            {label: 'Text', fieldName: 'Description', type: 'text', sortable: 'true'},
+            {label: 'Created Date', fieldName: 'CreatedDate', type: 'date', sortable: 'true', typeAttributes: {
                 year: 'numeric',
                 month: 'short',
                 day: 'numeric',
@@ -22,72 +21,58 @@
         ]);
 
         var page = component.get("v.page") || 1;
-        var recordToDisplay = component.get("v.tableSize");
-        var objectType = component.get("v.objectType");
-        var parentRecordId = component.get("v.recordId");
-        var parentField = component.get("v.parentFieldName");
-        helper.getData(component, page, recordToDisplay, objectType, parentRecordId, parentField);
+        helper.getData(component, page);
     },
 
     navigate: function(component, event, helper) {
         var page = component.get("v.page") || 1;
         var direction = event.getSource().get("v.label");
-        var recordToDisplay = component.get("v.tableSize");
         page = direction === "Previous Page" ? (page - 1) : (page + 1);
-        var objectType = component.get("v.objectType");
-        var parentRecordId = component.get("v.recordId");
-        var parentField = component.get("v.parentFieldName");
 
-        helper.getData(component, page, recordToDisplay, objectType, parentRecordId, parentField);
+        helper.getData(component, page);
     },
 
     onSelectChange: function(component, event, helper) {
         var page = 1;
-        var recordToDisply = component.get("v.tableSize");
-
-        helper.getData(component, page, recordToDisply);
+        helper.getData(component, page);
     },
+
     handleRowAction: function (component, event, helper) {
-        console.log('TEST');
         var action = event.getParam('action');
         var row = event.getParam('row');
         switch (action.name) {
             case 'edit':
                 var editRecordEvent = $A.get("e.force:editRecord");
-                editRecordEvent.setParams({
+                editRecordEvent.fire({
                     "recordId":  row.Id
                 });
-                editRecordEvent.fire();
                 break;
             case 'delete':
                 var page = component.get("v.page") || 1;
-                var recordToDisply = component.get("v.tableSize");
-                var objectType = component.get("v.objectType");
-                var parentRecordId = component.get("v.recordId");
-                var parentField = component.get("v.parentFieldName");
-
-                helper.delete(component, page, recordToDisply, row.Id, objectType, parentRecordId, parentField);
+                helper.delete(component, page, row.Id);
                 break;
         }
     },
-    createRecord : function (component, event, helper) {
+
+    createRecord : function (component) {
         var createRecordEvent = $A.get("e.force:createRecord");
         var objectType = component.get("v.objectType");
-        var parentRecordId = component.get("v.recordId");
-        var parentField = component.get("v.parentFieldName");
 
-        createRecordEvent.setParams({
-            "entityApiName": objectType,
+        createRecordEvent.fire({
+            "entityApiName": objectType
         });
-        createRecordEvent.fire();
     },
+
     handleApplicationEvent: function (component, event, helper) {
-        console.log('catch');
         var page = component.get("v.page") || 1;
-        var recordToDisplay = component.get("v.tableSize");
-        var objectType = component.get("v.objectType");
-        var parentRecordId = component.get("v.recordId");
-        var parentField = component.get("v.parentFieldName");
-        helper.getData(component, page, recordToDisplay, objectType, parentRecordId, parentField);
+        helper.getData(component, page);
+    },
+
+    updateColumnSorting: function (component, event, helper) {
+        var fieldName = event.getParam('fieldName');
+        var sortDirection = event.getParam('sortDirection');
+        component.set("v.sortedBy", fieldName);
+        component.set("v.sortedDirection", sortDirection);
+        helper.sortData(component, fieldName, sortDirection);
     }
 })
