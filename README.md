@@ -1,5 +1,5 @@
-# RelatedList
-LIghtning Custom Related List Dynamic Salesforce
+# Custom Related List Component
+> This is a custom lightning component used to display related objects on parent record page.
 
-This is a custom lightning component used to display related objects on parent record page. You can see it
-http://prntscr.com/jpi6l4
+![](screen.png)
+
