@@ -1,4 +1,4 @@
-<design:component label="Pagination">
+<design:component label="Related List">
     <design:attribute name="tableSize" label="Table Size"/>
     <design:attribute name="objectType" label="Object API Name" />
     <design:attribute name="parentFieldName" label="Parent Field API Name"/>
